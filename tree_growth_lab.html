@@ -438,53 +438,39 @@ $ rad_ib_mm &lt;dbl&gt; 10.78145, 11.73145, 12.71645, 13.70145, 14.41645, 15.256
 </section>
 <section id="final-question-use-a-combination-of-dplyr-verbs-to-compute-these-values-per-year-growth-made-by-each-tree-total-growth-record-avg-and-std-across-the-species-and-report-the-3-species-with-the-fastest-growth-and-the-3-species-with-the-slowest-growth.-you-will-need-to-use-either-lag-or-diff-in-your-compuation.-you-can-learn-more-about-each-in-the-help-pages.-lastly-find-and-include-an-image-of-the-fastest-growing-species.-add-the-image-to-your-images-directory." class="level3">
 <h3 class="anchored" data-anchor-id="final-question-use-a-combination-of-dplyr-verbs-to-compute-these-values-per-year-growth-made-by-each-tree-total-growth-record-avg-and-std-across-the-species-and-report-the-3-species-with-the-fastest-growth-and-the-3-species-with-the-slowest-growth.-you-will-need-to-use-either-lag-or-diff-in-your-compuation.-you-can-learn-more-about-each-in-the-help-pages.-lastly-find-and-include-an-image-of-the-fastest-growing-species.-add-the-image-to-your-images-directory.">Final Question: Use a combination of dplyr verbs to compute these values (per year growth made by each tree, total growth record, avg and std across the species) and report the 3 species with the fastest growth, and the 3 species with the slowest growth. (** You will need to use either lag() or diff() in your compuation. You can learn more about each in the Help pages). Lastly, find and include an image of the fastest growing species. Add the image to your images directory.</h3>
-<p><strong>Top 3 Fastest Growing Species:</strong> PIRE (Pinus resinosa), PIBA (Pinus banksiana), POTR (Populus tremuloides)</p>
-<p><strong>Top 3 Slowest Growing Species:</strong> QURU (Quercus rubra), LALA (Larix laricina), THOC (Thuja occidentalis)</p>
+<p><strong>Top 3 Fastest Growing Species:</strong> PIRE (Pinus resinosa), POTR (Populus tremuloides), PIBA (Pinus banksiana)</p>
+<p><strong>Top 3 Slowest Growing Species:</strong> LALA (Larix laricina), THOC (Thuja occidentalis), QURU (Quercus rubra)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>growth_record <span class="ot">&lt;-</span> tree_dat <span class="sc">%&gt;%</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(species, treeID, year) <span class="sc">%&gt;%</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species, treeID) <span class="sc">%&gt;%</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">annual_growth =</span> DBH <span class="sc">-</span> <span class="fu">lag</span>(DBH)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(annual_growth)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">record_years =</span> <span class="fu">n</span>(),</span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_growth =</span> <span class="fu">sum</span>(annual_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_growth =</span> <span class="fu">mean</span>(annual_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">std_growth =</span> <span class="fu">sd</span>(annual_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(record_years <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treeID) <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">growth =</span> DBH <span class="sc">-</span> <span class="fu">lag</span>(DBH),</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">total_years =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(growth), total_years <span class="sc">&gt;</span><span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species) <span class="sc">%&gt;%</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_growth =</span> <span class="fu">mean</span>(growth)) </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>fastest <span class="ot">&lt;-</span> <span class="fu">slice_max</span>(temp, mean_growth, <span class="at">n =</span> <span class="dv">3</span>)</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>slowest <span class="ot">&lt;-</span> <span class="fu">slice_min</span>(temp, mean_growth, <span class="at">n =</span> <span class="dv">3</span>)</span>
 <span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>species_total_growth <span class="ot">&lt;-</span> growth_record <span class="sc">%&gt;%</span></span>
-<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species) <span class="sc">%&gt;%</span></span>
-<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_growth =</span> <span class="fu">mean</span>(mean_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">std_growth =</span> <span class="fu">mean</span>(std_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_growth))</span>
-<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>fastest_growth <span class="ot">&lt;-</span> species_total_growth <span class="sc">%&gt;%</span> </span>
-<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
-<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fastest_growth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fastest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  species mean_growth std_growth
-  &lt;chr&gt;         &lt;dbl&gt;      &lt;dbl&gt;
-1 PIRE          0.417      0.191
-2 PIBA          0.362      0.217
-3 POTR          0.351      0.170</code></pre>
+<pre><code># A tibble: 3 × 2
+  species mean_growth
+  &lt;chr&gt;         &lt;dbl&gt;
+1 PIRE          0.358
+2 POTR          0.331
+3 PIBA          0.326</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>slowest_growth <span class="ot">&lt;-</span> species_total_growth <span class="sc">%&gt;%</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_tail</span>(<span class="at">n=</span><span class="dv">3</span>)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(slowest_growth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(slowest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  species mean_growth std_growth
-  &lt;chr&gt;         &lt;dbl&gt;      &lt;dbl&gt;
-1 QURU          0.177     0.0688
-2 LALA          0.172     0.0962
-3 THOC          0.154     0.0674</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>fastest_growth<span class="sc">$</span>species[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "PIRE"</code></pre>
+<pre><code># A tibble: 3 × 2
+  species mean_growth
+  &lt;chr&gt;         &lt;dbl&gt;
+1 LALA          0.150
+2 THOC          0.153
+3 QURU          0.168</code></pre>
 </div>
 </div>
 <div class="quarto-figure quarto-figure-center">

@@ -202,37 +202,24 @@ tree_dat %>%
 ```
 ### Final Question: Use a combination of dplyr verbs to compute these values (per year growth made by each tree, total growth record, avg and std across the species) and report the 3 species with the fastest growth, and the 3 species with the slowest growth. (** You will need to use either lag() or diff() in your compuation. You can learn more about each in the Help pages). Lastly, find and include an image of the fastest growing species. Add the image to your images directory.
 
-**Top 3 Fastest Growing Species:** PIRE (Pinus resinosa), PIBA (Pinus banksiana), POTR (Populus tremuloides)
+**Top 3 Fastest Growing Species:** PIRE (Pinus resinosa), POTR (Populus tremuloides), PIBA (Pinus banksiana)
 
-**Top 3 Slowest Growing Species:** QURU (Quercus rubra), LALA (Larix laricina), THOC (Thuja occidentalis)
+**Top 3 Slowest Growing Species:** LALA (Larix laricina), THOC (Thuja occidentalis), QURU (Quercus rubra)
 ```{r}
-growth_record <- tree_dat %>%
-  arrange(species, treeID, year) %>%
-  group_by(species, treeID) %>%
-  mutate(annual_growth = DBH - lag(DBH)) %>%
-  filter(!is.na(annual_growth)) %>%
-  summarize(
-    record_years = n(),
-    total_growth = sum(annual_growth, na.rm = TRUE),
-    mean_growth = mean(annual_growth, na.rm = TRUE),
-    std_growth = sd(annual_growth, na.rm = TRUE)) %>%
-  filter(record_years >= 10) %>%
-  ungroup()
-
-species_total_growth <- growth_record %>%
+temp <- tree_dat %>%
+  group_by(treeID) %>%
+  arrange(year) %>%
+  mutate(growth = DBH - lag(DBH),
+  total_years = n()) %>%
+  filter(!is.na(growth), total_years >10) %>%
+  ungroup() %>%
   group_by(species) %>%
-  summarize(mean_growth = mean(mean_growth, na.rm = TRUE),
-            std_growth = mean(std_growth, na.rm = TRUE)) %>%
-  arrange(desc(mean_growth))
+  summarize(mean_growth = mean(growth)) 
 
-fastest_growth <- species_total_growth %>% 
-  slice(1:3)
-print(fastest_growth)
+fastest <- slice_max(temp, mean_growth, n = 3)
+slowest <- slice_min(temp, mean_growth, n = 3)
 
-slowest_growth <- species_total_growth %>%
-  slice_tail(n=3)
-print(slowest_growth)
-
-fastest_growth$species[1]
+print(fastest)
+print(slowest)
 ```
 ![Fastest Growing Species: Pinus resinosa](imgs/Pinus_resinosa.jpg)
