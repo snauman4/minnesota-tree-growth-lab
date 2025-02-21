@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Samantha Nauman">
+<meta name="dcterms.date" content="2025-02-20">
+
+<title>Lab 2: Minnesota Tree Growth</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="tree_growth_lab_files/libs/clipboard/clipboard.min.js"></script>
+<script src="tree_growth_lab_files/libs/quarto-html/quarto.js"></script>
+<script src="tree_growth_lab_files/libs/quarto-html/popper.min.js"></script>
+<script src="tree_growth_lab_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="tree_growth_lab_files/libs/quarto-html/anchor.min.js"></script>
+<link href="tree_growth_lab_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="tree_growth_lab_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="tree_growth_lab_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="tree_growth_lab_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="tree_growth_lab_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lab 2: Minnesota Tree Growth</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Samantha Nauman </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 20, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="question-1-describe-the-structure-and-what-you-see-in-the-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="question-1-describe-the-structure-and-what-you-see-in-the-dataset">Question 1: Describe the structure and what you see in the dataset?</h3>
+<p>In this dataset, it appears to be a 131,386 by 8 table of a tree growth analysis for 15 different tree species from 1897 to 2007. Within it, the columns consist of the treeID, standID, stand, year, species, age, inc (linear growth increment), and rad_ib (bark radius at breast height).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/tree_dat.csv"</span>) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="st">"tree_dat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> chr "tree_dat"</code></pre>
+</div>
+</div>
+</section>
+<section id="question-2-how-many-records-have-been-made-in-stand-1" class="level3">
+<h3 class="anchored" data-anchor-id="question-2-how-many-records-have-been-made-in-stand-1">Question 2: How many records have been made in stand 1?</h3>
+<p>In stand 1, there have been 979 records made.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(standID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tally</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    n
+1 979</code></pre>
+</div>
+</div>
+</section>
+<section id="question-3-how-many-records-of-the-abies-balsamea-and-pinus-strobus-species-have-been-made" class="level3">
+<h3 class="anchored" data-anchor-id="question-3-how-many-records-of-the-abies-balsamea-and-pinus-strobus-species-have-been-made">Question 3: How many records of the Abies balsamea and Pinus strobus species have been made?</h3>
+<p>For the Abies balsamea, there have been 13,033 records made. For the Pinus strobus, there have been 4,188 records made.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ABBA"</span>, <span class="st">"PIST"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  species     n
+1    ABBA 13033
+2    PIST  4188</code></pre>
+</div>
+</div>
+</section>
+<section id="question-4-how-many-trees-are-older-than-200-years-old-in-the-last-year-of-the-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="question-4-how-many-trees-are-older-than-200-years-old-in-the-last-year-of-the-dataset">Question 4: How many trees are older than 200 years old in the last year of the dataset?</h3>
+<p>In the last year of the tree_dat dataset, there are 7 trees older than 200 years.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>last_year <span class="ot">&lt;-</span> <span class="fu">max</span>(tree_dat<span class="sc">$</span>year, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co">#finds last yr in the data set</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> last_year, age <span class="sc">&gt;</span> <span class="dv">200</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tally</span>() <span class="co">#counts trees older than 200 yrs in the last yr</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  n
+1 7</code></pre>
+</div>
+</div>
+</section>
+<section id="question-5-what-is-the-oldest-tree-in-the-dataset-found-using-slice_max" class="level3">
+<h3 class="anchored" data-anchor-id="question-5-what-is-the-oldest-tree-in-the-dataset-found-using-slice_max">Question 5: What is the oldest tree in the dataset found using slice_max?</h3>
+<p>The oldest tree in the dataset is the Pinus resinosa, which is 296 years old.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> age, <span class="at">n=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  treeID standID stand year species age  inc rad_ib
+1     24       2    A2 2007    PIRE 269 0.37 308.84</code></pre>
+</div>
+</div>
+</section>
+<section id="question-6-find-the-oldest-5-trees-recorded-in-2001." class="level3">
+<h3 class="anchored" data-anchor-id="question-6-find-the-oldest-5-trees-recorded-in-2001.">Question 6: Find the oldest 5 trees recorded in 2001.</h3>
+<p>The 5 oldest trees recorded in 2001 are two Pinus resinosa (263, 259) and three Fraxinus nigra (212, 206, 206).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2001</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> age, <span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  treeID standID stand year species age   inc  rad_ib
+1     24       2    A2 2001    PIRE 263 0.210 306.880
+2     25       2    A2 2001    PIRE 259 0.280 156.210
+3   1595      24    F1 2001    FRNI 212 0.579 156.267
+4   1598      24    F1 2001    FRNI 206 0.394 130.251
+5   1712      26    F3 2001    FRNI 206 0.168 154.354</code></pre>
+</div>
+</div>
+</section>
+<section id="question-7-using-slice_sample-how-many-trees-are-in-a-30-sample-of-those-recorded-in-2002" class="level3">
+<h3 class="anchored" data-anchor-id="question-7-using-slice_sample-how-many-trees-are-in-a-30-sample-of-those-recorded-in-2002">Question 7: Using slice_sample, how many trees are in a 30% sample of those recorded in 2002?</h3>
+<p>In a 30% sample of recorded trees in 2002, there are 687 trees. (did not show output since it was a large table)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2002</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">prop =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="question-8-filter-all-trees-in-stand-5-in-2007.-sort-this-subset-by-descending-radius-at-breast-height-rad_ib-and-use-slice_head-to-get-the-top-three-trees.-report-the-tree-ids." class="level3">
+<h3 class="anchored" data-anchor-id="question-8-filter-all-trees-in-stand-5-in-2007.-sort-this-subset-by-descending-radius-at-breast-height-rad_ib-and-use-slice_head-to-get-the-top-three-trees.-report-the-tree-ids.">Question 8: Filter all trees in stand 5 in 2007. Sort this subset by <em>descending</em> radius at breast height (rad_ib) and use slice_head() to get the top three trees. Report the tree IDs.</h3>
+<p>In descending order of tree radius at breast height in stand 5 in 2007, the trees are #128 (Pinus strobus), #157 (Pinus resinosa), and #135 (Picea mariana).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(standID <span class="sc">==</span> <span class="dv">5</span>, year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(rad_ib)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  treeID standID stand year species age   inc   rad_ib
+1    128       5    A6 2007    PIST  82 0.885 238.8850
+2    157       5    A6 2007    PIRE  85 0.900 217.8700
+3    135       5    A6 2007    PIMA  84 0.110 210.1874</code></pre>
+</div>
+</div>
+</section>
+<section id="question-9-reduce-your-full-data.frame-to-treeid-stand-year-and-radius-at-breast-height.-filter-to-only-those-in-stand-3-with-records-from-2007-and-use-slice_min-to-pull-the-smallest-three-trees-measured-that-year." class="level3">
+<h3 class="anchored" data-anchor-id="question-9-reduce-your-full-data.frame-to-treeid-stand-year-and-radius-at-breast-height.-filter-to-only-those-in-stand-3-with-records-from-2007-and-use-slice_min-to-pull-the-smallest-three-trees-measured-that-year.">Question 9: Reduce your full data.frame to [treeID, stand, year, and radius at breast height]. Filter to only those in stand 3 with records from 2007, and use slice_min to pull the smallest three trees measured that year.</h3>
+<p>The smallest three trees in stand 3 measured in 2007 in descending order are #50, #56, and #36.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(treeID, standID, year, rad_ib) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(standID <span class="sc">==</span> <span class="dv">3</span>, year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_min</span>(rad_ib, <span class="at">n =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  treeID standID year rad_ib
+1     50       3 2007 47.396
+2     56       3 2007 48.440
+3     36       3 2007 54.925</code></pre>
+</div>
+</div>
+</section>
+<section id="question-10-use-select-to-remove-the-stand-column.-use-glimpse-to-show-the-dataset." class="level3">
+<h3 class="anchored" data-anchor-id="question-10-use-select-to-remove-the-stand-column.-use-glimpse-to-show-the-dataset.">Question 10: Use select to <em>remove</em> the stand column. Use glimpse to show the dataset.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>stand) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 131,386
+Columns: 7
+$ treeID  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ standID &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ year    &lt;int&gt; 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 19…
+$ species &lt;chr&gt; "ABBA", "ABBA", "ABBA", "ABBA", "ABBA", "ABBA", "ABBA", "ABBA"…
+$ age     &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,…
+$ inc     &lt;dbl&gt; 0.930, 0.950, 0.985, 0.985, 0.715, 0.840, 0.685, 0.940, 1.165,…
+$ rad_ib  &lt;dbl&gt; 10.78145, 11.73145, 12.71645, 13.70145, 14.41645, 15.25645, 15…</code></pre>
+</div>
+</div>
+</section>
+<section id="question-11-look-at-the-help-document-for-dplyrselect-and-examine-the-overview-of-selection-features.-identify-an-option-there-are-multiple-that-would-help-select-all-columns-with-the-string-id-in-the-name.-using-glimpse-to-view-the-remaining-dataset." class="level3">
+<h3 class="anchored" data-anchor-id="question-11-look-at-the-help-document-for-dplyrselect-and-examine-the-overview-of-selection-features.-identify-an-option-there-are-multiple-that-would-help-select-all-columns-with-the-string-id-in-the-name.-using-glimpse-to-view-the-remaining-dataset.">Question 11: Look at the help document for dplyr::select and examine the “Overview of selection features”. Identify an option (there are multiple) that would help select all columns with the string “ID” in the name. Using glimpse to view the remaining dataset.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>?dplyr<span class="sc">::</span>select</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"ID"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 131,386
+Columns: 2
+$ treeID  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ standID &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…</code></pre>
+</div>
+</div>
+</section>
+<section id="question-12-find-a-selection-pattern-that-captures-all-columns-with-either-id-or-stand-in-the-name.-use-glimpse-to-verify-the-selection." class="level3">
+<h3 class="anchored" data-anchor-id="question-12-find-a-selection-pattern-that-captures-all-columns-with-either-id-or-stand-in-the-name.-use-glimpse-to-verify-the-selection.">Question 12: Find a selection pattern that captures all columns with either ‘ID’ or ‘stand’ in the name. Use glimpse to verify the selection.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"ID"</span>), <span class="fu">contains</span>(<span class="st">"stand"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 131,386
+Columns: 3
+$ treeID  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ standID &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ stand   &lt;chr&gt; "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A…</code></pre>
+</div>
+</div>
+</section>
+<section id="question-13-looking-back-at-the-data-dictionary-rename-rad_ib-and-inc-to-include-_unit-in-the-name.-unlike-earlier-options-be-sure-that-this-renaming-is-permanent-and-stays-with-your-data.frame-e.g.--.-use-glimpse-to-view-your-new-data.frame." class="level3">
+<h3 class="anchored" data-anchor-id="question-13-looking-back-at-the-data-dictionary-rename-rad_ib-and-inc-to-include-_unit-in-the-name.-unlike-earlier-options-be-sure-that-this-renaming-is-permanent-and-stays-with-your-data.frame-e.g.--.-use-glimpse-to-view-your-new-data.frame.">Question 13: Looking back at the data dictionary, rename rad_ib and inc to include _[unit] in the name. Unlike earlier options, be sure that this renaming is permanent, and stays with your data.frame (e.g.&nbsp;&lt;-). Use glimpse to view your new data.frame.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="ot">&lt;-</span> tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">rad_ib_mm =</span> rad_ib, <span class="at">inc_mm =</span> inc) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 131,386
+Columns: 8
+$ treeID    &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ standID   &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ stand     &lt;chr&gt; "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A1", "A1", …
+$ year      &lt;int&gt; 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, …
+$ species   &lt;chr&gt; "ABBA", "ABBA", "ABBA", "ABBA", "ABBA", "ABBA", "ABBA", "ABB…
+$ age       &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…
+$ inc_mm    &lt;dbl&gt; 0.930, 0.950, 0.985, 0.985, 0.715, 0.840, 0.685, 0.940, 1.16…
+$ rad_ib_mm &lt;dbl&gt; 10.78145, 11.73145, 12.71645, 13.70145, 14.41645, 15.25645, …</code></pre>
+</div>
+</div>
+</section>
+<section id="question-14-a-key-measurement-in-forestry-in-basal-area-column.-the-metric-is-computed-with-the-formula" class="level3">
+<h3 class="anchored" data-anchor-id="question-14-a-key-measurement-in-forestry-in-basal-area-column.-the-metric-is-computed-with-the-formula">Question 14: A key measurement in forestry in “basal area column”. The metric is computed with the formula:</h3>
+<p>BA(m2) = 0.00007854⋅DBH^2 Where DBH is the diameter at breast height (cm). Use mutate to compute DBH in centimeters, and BA in m2 (HINT: Make sure rad_ib is in cm prior to computing the diameter!). What is the mean BA_m2 of the species POTR in 2007?</p>
+<p>The mean BA_m2 of the species POTR in 2007 is 0.03696619 m^2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">rad_ib_cm =</span> rad_ib_mm<span class="sc">/</span><span class="dv">10</span>, </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">DBH =</span> rad_ib_cm<span class="sc">*</span><span class="dv">2</span>, </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">BA_m2 =</span> <span class="fl">0.00007854</span><span class="sc">*</span>DBH<span class="sc">^</span><span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"POTR"</span>, year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_BA_m2 =</span> <span class="fu">mean</span>(BA_m2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mean_BA_m2
+1 0.03696619</code></pre>
+</div>
+</div>
+</section>
+<section id="question-15-lets-say-for-the-sake-of-our-study-trees-are-not-established-until-they-are-5-years-of-age.-use-if_else-to-add-a-boolean-column-to-our-dataset-called-established-that-is-true-if-the-age-is-greater-then-5-and-false-if-less-then-or-equal-to-five.-once-added-use-count-see-count-to-determine-how-many-records-are-from-estabilshed-trees" class="level3">
+<h3 class="anchored" data-anchor-id="question-15-lets-say-for-the-sake-of-our-study-trees-are-not-established-until-they-are-5-years-of-age.-use-if_else-to-add-a-boolean-column-to-our-dataset-called-established-that-is-true-if-the-age-is-greater-then-5-and-false-if-less-then-or-equal-to-five.-once-added-use-count-see-count-to-determine-how-many-records-are-from-estabilshed-trees">Question 15: Lets say for the sake of our study, trees are not established until they are 5 years of age. Use if_else to add a boolean column to our dataset called established that is TRUE if the age is greater then 5 and FALSE if less then or equal to five. Once added, use count (see ?count) to determine how many records are from estabilshed trees?</h3>
+<p>From established trees, there are 122,503 records.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="ot">&lt;-</span> tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">established =</span> <span class="fu">if_else</span>(age <span class="sc">&gt;</span> <span class="dv">5</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(established)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  established      n
+1       FALSE   8883
+2        TRUE 122503</code></pre>
+</div>
+</div>
+</section>
+<section id="question-16-use-mutate-and-case_when-to-add-a-new-column-to-your-data.frame-that-classifies-each-tree-into-the-proper-dbh_class.-once-done-limit-your-dataset-to-the-year-2007-and-report-the-number-of-each-class-with-count." class="level3">
+<h3 class="anchored" data-anchor-id="question-16-use-mutate-and-case_when-to-add-a-new-column-to-your-data.frame-that-classifies-each-tree-into-the-proper-dbh_class.-once-done-limit-your-dataset-to-the-year-2007-and-report-the-number-of-each-class-with-count.">Question 16: Use mutate and case_when to add a new column to your data.frame that classifies each tree into the proper DBH_class. Once done, limit your dataset to the year 2007 and report the number of each class with count.</h3>
+<p>In the year 2007, there are 0 seedlings, 252 saplings, 1963 poles, and 76 sawlogs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="ot">&lt;-</span> tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rad_ib_cm =</span> rad_ib_mm<span class="sc">/</span><span class="dv">10</span>, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">DBH =</span> rad_ib_cm<span class="sc">*</span><span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DBH_class =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    DBH <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> DBH <span class="sc">&lt;</span> <span class="fl">2.5</span> <span class="sc">~</span> <span class="st">"seedling"</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    DBH <span class="sc">&gt;=</span> <span class="fl">2.5</span> <span class="sc">&amp;</span> DBH <span class="sc">&lt;</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">"sapling"</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    DBH <span class="sc">&gt;=</span> <span class="dv">10</span> <span class="sc">&amp;</span> DBH <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"pole"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    DBH <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"sawlog"</span>, </span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(DBH_class) <span class="sc">%&gt;%</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  DBH_class    n
+1      pole 1963
+2   sapling  252
+3    sawlog   76</code></pre>
+</div>
+</div>
+</section>
+<section id="question-17-compute-the-mean-dbh-in-cm-and-standard-deviation-of-dbh-in-cm-for-all-trees-in-2007.-explain-the-values-you-found-and-their-statistical-meaning." class="level3">
+<h3 class="anchored" data-anchor-id="question-17-compute-the-mean-dbh-in-cm-and-standard-deviation-of-dbh-in-cm-for-all-trees-in-2007.-explain-the-values-you-found-and-their-statistical-meaning.">Question 17: Compute the mean DBH (in cm) and standard deviation of DBH (in cm) for all trees in 2007. Explain the values you found and their statistical meaning.</h3>
+<p>For all trees in 2007, the mean DBH (cm) is 16.09351, and the standard deviation of DBH (cm) is 6.138643.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_DBH =</span> <span class="fu">mean</span>(DBH, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">std_DBH =</span> <span class="fu">sd</span>(DBH, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  mean_DBH  std_DBH
+1 16.09351 6.138643</code></pre>
+</div>
+</div>
+</section>
+<section id="question-18-compute-the-per-species-mean-tree-age-using-only-those-ages-recorded-in-2003.-identify-the-three-species-with-the-oldest-mean-age." class="level3">
+<h3 class="anchored" data-anchor-id="question-18-compute-the-per-species-mean-tree-age-using-only-those-ages-recorded-in-2003.-identify-the-three-species-with-the-oldest-mean-age.">Question 18: Compute the <em>per species</em> mean tree age using only those ages recorded in 2003. Identify the three species with the oldest mean age.</h3>
+<p>The three species with the oldest mean tree age in descending order is THOC (Thuja occidentalis) at 126.63830 years, FRNI (Fraxinus nigra) at 83.08333 years, and PIST (Pinus strobus) at 73.28571 years old.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2003</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_tree_age =</span> <span class="fu">mean</span>(age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_tree_age)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  species mean_tree_age
+  &lt;chr&gt;           &lt;dbl&gt;
+1 THOC            127. 
+2 FRNI             83.1
+3 PIST             73.3</code></pre>
+</div>
+</div>
+</section>
+<section id="question-19-in-a-single-summarize-call-find-the-number-of-unique-years-with-records-in-the-data-set-along-with-the-first-and-last-year-recorded" class="level3">
+<h3 class="anchored" data-anchor-id="question-19-in-a-single-summarize-call-find-the-number-of-unique-years-with-records-in-the-data-set-along-with-the-first-and-last-year-recorded">Question 19: In a single summarize call, find the number of unique years with records in the data set along with the first and last year recorded?</h3>
+<p>There are 111 unique years with records in the data set, with the first year recorded in 1897 and the last year recorded in 2007.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">unique_years =</span> <span class="fu">n_distinct</span>(year, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">first_year =</span> <span class="fu">min</span>(year, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">last_year =</span> <span class="fu">max</span>(year, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  unique_years first_year last_year
+1          111       1897      2007</code></pre>
+</div>
+</div>
+</section>
+<section id="question-20-determine-the-stands-with-the-largest-number-of-unique-years-recorded.-report-all-stands-with-largest-or-tied-with-the-largest-temporal-record." class="level3">
+<h3 class="anchored" data-anchor-id="question-20-determine-the-stands-with-the-largest-number-of-unique-years-recorded.-report-all-stands-with-largest-or-tied-with-the-largest-temporal-record.">Question 20: Determine the stands with the largest number of unique years recorded. Report all stands with largest (or tied with the largest) temporal record.</h3>
+<p>The stands all tied with the largest temporal record at 111 unique years is stands A1, D1, D2, D3, and F1.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stand) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">unique_years =</span> <span class="fu">n_distinct</span>(year, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(unique_years <span class="sc">==</span> <span class="fu">max</span>(unique_years)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  stand unique_years
+  &lt;chr&gt;        &lt;int&gt;
+1 A1             111
+2 D1             111
+3 D2             111
+4 D3             111
+5 F1             111</code></pre>
+</div>
+</div>
+</section>
+<section id="final-question-use-a-combination-of-dplyr-verbs-to-compute-these-values-per-year-growth-made-by-each-tree-total-growth-record-avg-and-std-across-the-species-and-report-the-3-species-with-the-fastest-growth-and-the-3-species-with-the-slowest-growth.-you-will-need-to-use-either-lag-or-diff-in-your-compuation.-you-can-learn-more-about-each-in-the-help-pages.-lastly-find-and-include-an-image-of-the-fastest-growing-species.-add-the-image-to-your-images-directory." class="level3">
+<h3 class="anchored" data-anchor-id="final-question-use-a-combination-of-dplyr-verbs-to-compute-these-values-per-year-growth-made-by-each-tree-total-growth-record-avg-and-std-across-the-species-and-report-the-3-species-with-the-fastest-growth-and-the-3-species-with-the-slowest-growth.-you-will-need-to-use-either-lag-or-diff-in-your-compuation.-you-can-learn-more-about-each-in-the-help-pages.-lastly-find-and-include-an-image-of-the-fastest-growing-species.-add-the-image-to-your-images-directory.">Final Question: Use a combination of dplyr verbs to compute these values (per year growth made by each tree, total growth record, avg and std across the species) and report the 3 species with the fastest growth, and the 3 species with the slowest growth. (** You will need to use either lag() or diff() in your compuation. You can learn more about each in the Help pages). Lastly, find and include an image of the fastest growing species. Add the image to your images directory.</h3>
+<p><strong>Top 3 Fastest Growing Species:</strong> PIRE (Pinus resinosa), PIBA (Pinus banksiana), POTR (Populus tremuloides)</p>
+<p><strong>Top 3 Slowest Growing Species:</strong> QURU (Quercus rubra), LALA (Larix laricina), THOC (Thuja occidentalis)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>growth_record <span class="ot">&lt;-</span> tree_dat <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(species, treeID, year) <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species, treeID) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">annual_growth =</span> DBH <span class="sc">-</span> <span class="fu">lag</span>(DBH)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(annual_growth)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">record_years =</span> <span class="fu">n</span>(),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_growth =</span> <span class="fu">sum</span>(annual_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_growth =</span> <span class="fu">mean</span>(annual_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">std_growth =</span> <span class="fu">sd</span>(annual_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(record_years <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>species_total_growth <span class="ot">&lt;-</span> growth_record <span class="sc">%&gt;%</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species) <span class="sc">%&gt;%</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_growth =</span> <span class="fu">mean</span>(mean_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">std_growth =</span> <span class="fu">mean</span>(std_growth, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_growth))</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>fastest_growth <span class="ot">&lt;-</span> species_total_growth <span class="sc">%&gt;%</span> </span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fastest_growth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  species mean_growth std_growth
+  &lt;chr&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+1 PIRE          0.417      0.191
+2 PIBA          0.362      0.217
+3 POTR          0.351      0.170</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>slowest_growth <span class="ot">&lt;-</span> species_total_growth <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_tail</span>(<span class="at">n=</span><span class="dv">3</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(slowest_growth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  species mean_growth std_growth
+  &lt;chr&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+1 QURU          0.177     0.0688
+2 LALA          0.172     0.0962
+3 THOC          0.154     0.0674</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>fastest_growth<span class="sc">$</span>species[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "PIRE"</code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Pinus_resinosa.jpg" class="img-fluid figure-img"></p>
+<figcaption>Fastest Growing Species: Pinus resinosa</figcaption>
+</figure>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
