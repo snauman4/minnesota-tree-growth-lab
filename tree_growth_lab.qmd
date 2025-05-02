@@ -3,6 +3,8 @@ title: "Lab 2: Minnesota Tree Growth"
 author: "Samantha Nauman"
 date: today
 format: html
+execute: 
+  echo: true
 ---
 ```{r}
 #| include: false
